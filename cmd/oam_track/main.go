@@ -155,7 +155,7 @@ func main() {
 	}
 
 	for _, name := range getNewNames(args.Domains.Slice(), start, db) {
-		g.Fprintln(color.Error, name)
+		g.Fprintln(color.Output, name)
 	}
 }
 
@@ -178,26 +178,25 @@ func getNewNames(domains []string, since time.Time, g *netmap.Graph) []string {
 		return []string{}
 	}
 
-	latest := since
 	if since.IsZero() {
-		for _, a := range assets {
-			last := a.LastSeen.Round(24 * time.Hour)
+		var latest time.Time
 
-			if _, ok := a.Asset.(domain.FQDN); ok && (latest.IsZero() || last.After(latest)) {
-				latest = last
+		for _, a := range assets {
+			if _, ok := a.Asset.(domain.FQDN); ok && a.LastSeen.After(latest) {
+				latest = a.LastSeen
 			}
 		}
+
+		since = latest.Truncate(24 * time.Hour)
 	}
 
 	res := stringset.New()
 	defer res.Close()
 
 	for _, a := range assets {
-		created := a.CreatedAt.Round(24 * time.Hour)
-		last := a.LastSeen.Round(24 * time.Hour)
-
 		if n, ok := a.Asset.(domain.FQDN); ok && !res.Has(n.Name) &&
-			created.Equal(last) && (created.Equal(latest) || created.After(latest)) {
+			(a.CreatedAt.Equal(since) || a.CreatedAt.After(since)) &&
+			(a.LastSeen.Equal(since) || a.LastSeen.After(since)) {
 			res.Insert(n.Name)
 		}
 	}
