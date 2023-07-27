@@ -42,7 +42,7 @@ import (
 
 const (
 	timeFormat = "01/02 15:04:05 2006 MST"
-	usageStr   = "track [options] [-since '" + timeFormat + "'] " + "-d domain"
+	usageMsg   = "track [options] [-since '" + timeFormat + "'] " + "-d domain"
 )
 
 var (
@@ -87,7 +87,7 @@ func main() {
 	trackCommand.StringVar(&args.Filepaths.Domains, "df", "", "Path to a file providing registered domain names")
 
 	var usage = func() {
-		g.Fprintf(color.Error, "Usage: %s %s\n\n", path.Base(os.Args[0]), usageStr)
+		g.Fprintf(color.Error, "Usage: %s %s\n\n", path.Base(os.Args[0]), usageMsg)
 		trackCommand.PrintDefaults()
 		g.Fprintln(color.Error, trackBuf.String())
 	}
