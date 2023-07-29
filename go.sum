@@ -448,10 +448,14 @@ github.com/owasp-amass/amass/v4 v4.0.4 h1:bCBt3YcPd0Iv5y4flaANlGEbfAibj0F6OtJF/P
 github.com/owasp-amass/amass/v4 v4.0.4/go.mod h1:Vo1UAPxkEbRCtFFkvw5AZS3MA6yQDzYPpYfGBdevJ6M=
 github.com/owasp-amass/asset-db v0.3.1 h1:YNM60WYr2k6bJmgju7zrKs5dHfvs7BUg0pewhERk49E=
 github.com/owasp-amass/asset-db v0.3.1/go.mod h1:ylDCIg2bFmQChSdjr8rJAdVFX/XAHECSedMM9fiCW7w=
+github.com/owasp-amass/asset-db v0.3.2 h1:hYAm5sbwWltuzSclo7BgG7E9e1O8x5WSn1TJbuYlhAU=
+github.com/owasp-amass/asset-db v0.3.2/go.mod h1:0dIY3OAQaoAG+dVOE8f57r61WgGJx1bvnn9DV4l6K8c=
 github.com/owasp-amass/config v0.1.3 h1:/DytnhVnmv1c0ry4WsroL/iwF9OoSVNwroohRkIpKec=
 github.com/owasp-amass/config v0.1.3/go.mod h1:kJd/esucV/7rdCZr2K+6ePSmKJcmMQpL5fP1UPLZ9/Y=
 github.com/owasp-amass/open-asset-model v0.1.0-alpha.0.20230622033932-2f80ca929692 h1:s5k5cTCRbVbIoRIwA44oWB4j/GGaYrmq1H3yqX1ic5A=
 github.com/owasp-amass/open-asset-model v0.1.0-alpha.0.20230622033932-2f80ca929692/go.mod h1:nwviDUc6sKkHScZFwXeNJNP2M4pgMTvB7we5r+EfNSk=
+github.com/owasp-amass/open-asset-model v0.2.0 h1:wkuFKOjYL6G0kIBbHDFGXAAxq3UlnVVp1iG+tFODPTg=
+github.com/owasp-amass/open-asset-model v0.2.0/go.mod h1:nwviDUc6sKkHScZFwXeNJNP2M4pgMTvB7we5r+EfNSk=
 github.com/owasp-amass/resolve v0.6.20 h1:wy4v+Z8sfQhn5Q+eVbQ6sb/b0wREfdauOL9SJzQyyNA=
 github.com/pascaldekloe/goe v0.0.0-20180627143212-57f6aae5913c/go.mod h1:lzWF7FIEvWOWxwDKqyGYQf6ZUaNfKdP144TG7ZOy1lc=
 github.com/pascaldekloe/goe v0.1.0/go.mod h1:lzWF7FIEvWOWxwDKqyGYQf6ZUaNfKdP144TG7ZOy1lc=
