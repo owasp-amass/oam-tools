@@ -217,7 +217,7 @@ func showEventData(args *dbArgs, asninfo bool, db *netmap.Graph) {
 		return
 	}
 
-	// 3. Iterate over assets to get IP addresses, netblocks, and ASNs
+	// 4. Iterate over assets to get IP addresses, netblocks, and ASNs
 	for domain, assets := range assetMap {
 
 		// Ensure that the asset is a FQDN
@@ -230,7 +230,6 @@ func showEventData(args *dbArgs, asninfo bool, db *netmap.Graph) {
 			if args.Options.IPv4 || args.Options.IPv6 {
 
 				for _, asset = range assets {
-					// Here, asset.Asset is of type IPAddress. You can cast it and use it.
 					ipAddress, ok := asset.Asset.(network.IPAddress)
 					if !ok {
 						log.Printf("Unexpected asset type here: %T", asset.Asset)
