@@ -2,7 +2,7 @@
 // Use of this source code is governed by Apache 2 LICENSE that can be found in the LICENSE file.
 // SPDX-License-Identifier: Apache-2.0
 
-package format
+package main
 
 import (
 	"fmt"
@@ -12,7 +12,6 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
-	"github.com/owasp-amass/oam-tools/requests"
 )
 
 const (
@@ -29,9 +28,9 @@ const (
 var (
 	// Colors used to ease the reading of program output
 	b      = color.New(color.FgHiBlue)
-	Yellow = color.New(color.FgHiYellow).SprintFunc()
-	Green  = color.New(color.FgHiGreen).SprintFunc()
-	Blue   = color.New(color.FgHiBlue).SprintFunc()
+	yellow = color.New(color.FgHiYellow).SprintFunc()
+	green  = color.New(color.FgHiGreen).SprintFunc()
+	blue   = color.New(color.FgHiBlue).SprintFunc()
 )
 
 // ASNSummaryData stores information related to discovered ASs and netblocks.
@@ -41,8 +40,8 @@ type ASNSummaryData struct {
 }
 
 // DesiredAddrTypes removes undesired address types from the AddressInfo slice.
-func DesiredAddrTypes(addrs []requests.AddressInfo, ipv4, ipv6 bool) []requests.AddressInfo {
-	var kept []requests.AddressInfo
+func DesiredAddrTypes(addrs []AddressInfo, ipv4, ipv6 bool) []AddressInfo {
+	var kept []AddressInfo
 
 	for _, addr := range addrs {
 		if ipv4 && IsIPv4(addr.Address) {
@@ -66,7 +65,7 @@ func IsIPv6(ip net.IP) bool {
 }
 
 // UpdateSummaryData updates the summary maps using the provided requests.Output data.
-func UpdateSummaryData(output *requests.Output, asns map[int]*ASNSummaryData) {
+func UpdateSummaryData(output *Output, asns map[int]*ASNSummaryData) {
 	for _, addr := range output.Addresses {
 		if addr.CIDRStr == "" {
 			continue
@@ -107,7 +106,7 @@ func FprintEnumerationSummary(out io.Writer, total int, asns map[int]*ASNSummary
 	pad(num, " ")
 	b.Fprintf(out, "%s\n", site)
 	pad(8, "----------")
-	fmt.Fprintf(out, "\n%s%s", Yellow(strconv.Itoa(total)), Green(" names discovered"))
+	fmt.Fprintf(out, "\n%s%s", yellow(strconv.Itoa(total)), green(" names discovered"))
 	fmt.Fprintln(out)
 
 	if len(asns) == 0 {
@@ -125,7 +124,7 @@ func FprintEnumerationSummary(out io.Writer, total int, asns map[int]*ASNSummary
 			asnstr = censorString(asnstr, 0, len(asnstr))
 			datastr = censorString(datastr, 0, len(datastr))
 		}
-		fmt.Fprintf(out, "%s%s %s %s\n", Blue("ASN: "), Yellow(asnstr), Green("-"), Green(datastr))
+		fmt.Fprintf(out, "%s%s %s %s\n", blue("ASN: "), yellow(asnstr), green("-"), green(datastr))
 
 		for cidr, ips := range data.Netblocks {
 			countstr := strconv.Itoa(ips)
@@ -137,7 +136,7 @@ func FprintEnumerationSummary(out io.Writer, total int, asns map[int]*ASNSummary
 
 			countstr = fmt.Sprintf("\t%-4s", countstr)
 			cidrstr = fmt.Sprintf("\t%-18s", cidrstr)
-			fmt.Fprintf(out, "%s%s %s\n", Yellow(cidrstr), Yellow(countstr), Blue("Subdomain Name(s)"))
+			fmt.Fprintf(out, "%s%s %s\n", yellow(cidrstr), yellow(countstr), blue("Subdomain Name(s)"))
 		}
 	}
 }
@@ -169,7 +168,7 @@ func censorNetBlock(input string) string {
 }
 
 // OutputLineParts returns the parts of a line to be printed for a requests.Output.
-func OutputLineParts(out *requests.Output, addrs, demo bool) (name, ips string) {
+func OutputLineParts(out *Output, addrs, demo bool) (name, ips string) {
 	if addrs {
 		for i, a := range out.Addresses {
 			if i != 0 {

@@ -39,8 +39,6 @@ import (
 	"github.com/caffix/stringset"
 	"github.com/fatih/color"
 	"github.com/owasp-amass/config/config"
-	"github.com/owasp-amass/oam-tools/format"
-	"github.com/owasp-amass/oam-tools/requests"
 	oam "github.com/owasp-amass/open-asset-model"
 	"github.com/owasp-amass/open-asset-model/domain"
 	"github.com/owasp-amass/open-asset-model/network"
@@ -78,7 +76,7 @@ type dbArgs struct {
 	}
 }
 
-type outLookup map[string]*requests.Output
+type outLookup map[string]*Output
 
 func main() {
 	var args dbArgs
@@ -203,31 +201,33 @@ func showEventData(args *dbArgs, asninfo bool, db *netmap.Graph) {
 		_, _ = outfile.Seek(0, 0)
 	}
 
-	var cache *requests.ASNCache
+	var cache *ASNCache
 	if asninfo {
-		cache = requests.NewASNCache()
+		cache = NewASNCache()
 		if err := fillCache(cache, db); err != nil {
 			r.Printf("Failed to populate the ASN cache: %v\n", err)
 			return
 		}
 	}
 
-	asns := make(map[int]*format.ASNSummaryData)
+	asns := make(map[int]*ASNSummaryData)
 	for _, out := range getEventOutput(context.Background(), domains, asninfo, db, cache) {
-
 		if len(domains) > 0 && !domainNameInScope(out.Name, domains) {
 			continue
 		}
 
-		out.Addresses = format.DesiredAddrTypes(out.Addresses, args.Options.IPv4, args.Options.IPv6)
-		if l := len(out.Addresses); (args.Options.IPs || args.Options.IPv4 || args.Options.IPv6) && l == 0 {
+		if args.Options.IPv4 || args.Options.IPv6 {
+			out.Addresses = DesiredAddrTypes(out.Addresses, args.Options.IPv4, args.Options.IPv6)
+		}
+
+		if l := len(out.Addresses); (args.Options.IPv4 || args.Options.IPv6) && l == 0 {
 			continue
 		} else if l > 0 {
-			format.UpdateSummaryData(out, asns)
+			UpdateSummaryData(out, asns)
 		}
 
 		total++
-		name, ips := format.OutputLineParts(out, args.Options.IPs || args.Options.IPv4 || args.Options.IPv6, args.Options.DemoMode)
+		name, ips := OutputLineParts(out, args.Options.IPv4 || args.Options.IPv6, args.Options.DemoMode)
 		if ips != "" {
 			ips = " " + ips
 		}
@@ -239,7 +239,7 @@ func showEventData(args *dbArgs, asninfo bool, db *netmap.Graph) {
 				written = true
 			}
 			if !written {
-				fmt.Fprintf(color.Output, "%s%s\n", format.Green(name), format.Yellow(ips))
+				fmt.Fprintf(color.Output, "%s%s\n", green(name), yellow(ips))
 			}
 		}
 	}
@@ -261,7 +261,7 @@ func showEventData(args *dbArgs, asninfo bool, db *netmap.Graph) {
 			out = color.Output
 		}
 
-		format.FprintEnumerationSummary(out, total, asns, args.Options.DemoMode)
+		FprintEnumerationSummary(out, total, asns, args.Options.DemoMode)
 		color.NoColor = status
 	}
 }
@@ -291,7 +291,7 @@ func openGraphDatabase(dir string, cfg *config.Config) *netmap.Graph {
 	return netmap.NewGraph("memory", "", "")
 }
 
-func getEventOutput(ctx context.Context, domains []string, asninfo bool, db *netmap.Graph, cache *requests.ASNCache) []*requests.Output {
+func getEventOutput(ctx context.Context, domains []string, asninfo bool, db *netmap.Graph, cache *ASNCache) []*Output {
 	filter := stringset.New()
 	defer filter.Close()
 
@@ -300,8 +300,8 @@ func getEventOutput(ctx context.Context, domains []string, asninfo bool, db *net
 
 // EventOutput returns findings within the receiver Graph within the scope identified by the provided domain names.
 // The filter is updated by EventOutput.
-func EventOutput(ctx context.Context, g *netmap.Graph, domains []string, since time.Time, f *stringset.Set, asninfo bool, cache *requests.ASNCache) []*requests.Output {
-	var res []*requests.Output
+func EventOutput(ctx context.Context, g *netmap.Graph, domains []string, since time.Time, f *stringset.Set, asninfo bool, cache *ASNCache) []*Output {
+	var res []*Output
 
 	if len(domains) == 0 {
 		return res
@@ -341,7 +341,7 @@ func EventOutput(ctx context.Context, g *netmap.Graph, domains []string, since t
 			continue
 		}
 
-		o := &requests.Output{
+		o := &Output{
 			Name:   n,
 			Domain: d,
 		}
@@ -357,7 +357,7 @@ func EventOutput(ctx context.Context, g *netmap.Graph, domains []string, since t
 				continue
 			}
 			if o, found := lookup[p.FQDN.Name]; found {
-				o.Addresses = append(o.Addresses, requests.AddressInfo{Address: net.ParseIP(addr)})
+				o.Addresses = append(o.Addresses, AddressInfo{Address: net.ParseIP(addr)})
 			}
 		}
 	}
@@ -384,8 +384,8 @@ func domainNameInScope(name string, scope []string) bool {
 	return discovered
 }
 
-func removeDuplicates(lookup outLookup, filter *stringset.Set) []*requests.Output {
-	output := make([]*requests.Output, 0, len(lookup))
+func removeDuplicates(lookup outLookup, filter *stringset.Set) []*Output {
+	output := make([]*Output, 0, len(lookup))
 
 	for _, o := range lookup {
 		if !filter.Has(o.Name) {
@@ -396,11 +396,11 @@ func removeDuplicates(lookup outLookup, filter *stringset.Set) []*requests.Outpu
 	return output
 }
 
-func addInfrastructureInfo(lookup outLookup, filter *stringset.Set, cache *requests.ASNCache) []*requests.Output {
-	output := make([]*requests.Output, 0, len(lookup))
+func addInfrastructureInfo(lookup outLookup, filter *stringset.Set, cache *ASNCache) []*Output {
+	output := make([]*Output, 0, len(lookup))
 
 	for _, o := range lookup {
-		var newaddrs []requests.AddressInfo
+		var newaddrs []AddressInfo
 
 		for _, a := range o.Addresses {
 			i := cache.AddrSearch(a.Address.String())
@@ -409,7 +409,7 @@ func addInfrastructureInfo(lookup outLookup, filter *stringset.Set, cache *reque
 			}
 
 			_, netblock, _ := net.ParseCIDR(i.Prefix)
-			newaddrs = append(newaddrs, requests.AddressInfo{
+			newaddrs = append(newaddrs, AddressInfo{
 				Address:     a.Address,
 				ASN:         i.ASN,
 				CIDRStr:     i.Prefix,
@@ -427,7 +427,7 @@ func addInfrastructureInfo(lookup outLookup, filter *stringset.Set, cache *reque
 	return output
 }
 
-func fillCache(cache *requests.ASNCache, db *netmap.Graph) error {
+func fillCache(cache *ASNCache, db *netmap.Graph) error {
 	start := time.Now().Add(-730 * time.Hour)
 	assets, err := db.DB.FindByType(oam.ASN, start)
 	if err != nil {
@@ -454,7 +454,7 @@ func fillCache(cache *requests.ASNCache, db *netmap.Graph) error {
 				continue
 			}
 
-			cache.Update(&requests.ASNRequest{
+			cache.Update(&ASNRequest{
 				Address:     first.String(),
 				ASN:         as.Number,
 				Prefix:      cidr.String(),

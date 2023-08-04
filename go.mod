@@ -6,9 +6,10 @@ require (
 	github.com/caffix/netmap v0.2.4
 	github.com/caffix/stringset v0.1.1
 	github.com/fatih/color v1.15.0
-	github.com/owasp-amass/asset-db v0.3.1
+	github.com/owasp-amass/amass/v4 v4.0.4
+	github.com/owasp-amass/asset-db v0.3.2
 	github.com/owasp-amass/config v0.1.3
-	github.com/owasp-amass/open-asset-model v0.1.0-alpha.0.20230622033932-2f80ca929692
+	github.com/owasp-amass/open-asset-model v0.2.0
 	github.com/stretchr/testify v1.8.2
 	github.com/yl2chen/cidranger v1.0.2
 	golang.org/x/net v0.12.0

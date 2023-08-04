@@ -132,7 +132,9 @@ func VizData(domains []string, since time.Time, g *netmap.Graph) ([]Node, []Edge
 							idx++
 							nodeToIdx[n2.Label] = fromID
 							nodes = append(nodes, *n2)
-							next = append(next, from)
+							if rel.Type != "ptr_record" {
+								next = append(next, from)
+							}
 						} else {
 							fromID = id
 						}
