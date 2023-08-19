@@ -26,6 +26,7 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
+	"log"
 	"os"
 	"path"
 
@@ -167,12 +168,12 @@ func main() {
 
 	output, err := yaml.Marshal(yamlDataSrcConfigs)
 	if err != nil {
-		fmt.Println("datasources not working")
+		log.Println("failed to marshal the yaml:", err)
 	} else {
 		yamlConfig.Options["datasources"] = "oam_datasources.yaml"
 		err = os.WriteFile("oam_datasources.yaml", output, 0644)
 		if err != nil {
-			fmt.Println("Failed to write oam_datasources.yaml:", err)
+			log.Println("Failed to write oam_datasources.yaml:", err)
 		} else {
 			fmt.Println("Wrote oam_datasources.yaml successfully")
 		}
@@ -180,11 +181,11 @@ func main() {
 
 	output, err = yaml.Marshal(&yamlConfig)
 	if err != nil {
-		fmt.Println("not working")
+		log.Println("failed to marshal the yaml:", err)
 	} else {
 		err = os.WriteFile("oam_config.yaml", output, 0644)
 		if err != nil {
-			fmt.Println("Failed to write oam_config.yaml:", err)
+			log.Println("Failed to write oam_config.yaml:", err)
 		} else {
 			fmt.Println("Wrote oam_config.yaml successfully")
 		}
