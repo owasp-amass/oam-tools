@@ -29,6 +29,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"path/filepath"
 
 	"github.com/fatih/color"
 	"github.com/owasp-amass/config/config"
@@ -42,11 +43,14 @@ const (
 var (
 	g = color.New(color.FgHiGreen)
 	r = color.New(color.FgHiRed)
+	b = color.New(color.FgHiBlue)
+	p = color.New(color.FgHiMagenta)
 )
 
 func main() {
 	var help1, help2 bool
-	var iniFile string
+	var iniFile, configFile, datasrcFile string
+	var err error
 	i2yCommand := flag.NewFlagSet("db", flag.ContinueOnError)
 
 	i2yBuf := new(bytes.Buffer)
@@ -54,7 +58,9 @@ func main() {
 
 	i2yCommand.BoolVar(&help1, "h", false, "Show the program usage message")
 	i2yCommand.BoolVar(&help2, "help", false, "Show the program usage message")
-	i2yCommand.StringVar(&iniFile, "input", "", "Path to the INI configuration file.")
+	i2yCommand.StringVar(&iniFile, "ini", "", "Path to the INI configuration file.")
+	i2yCommand.StringVar(&configFile, "cf", "oam_config.yaml", "YAML configuration file name.")
+	i2yCommand.StringVar(&datasrcFile, "df", "oam_datasources.yaml", "YAML data sources file name.")
 
 	var usage = func() {
 		g.Fprintf(color.Error, "Usage: %s %s\n\n", path.Base(os.Args[0]), dbUsageMsg)
@@ -76,8 +82,17 @@ func main() {
 	}
 	if iniFile == "" {
 		usage()
-		fmt.Println("inifile is wrong", iniFile)
+		r.Fprintln(color.Error, "Failed to parse the INI file: File not present, got \""+iniFile+"\" as the path.")
 		return
+	}
+
+	configFile, err = filepath.Abs(configFile)
+	if err != nil {
+		log.Fatal("Failed to get the absolute config path:", err)
+	}
+	datasrcFile, err = filepath.Abs(datasrcFile)
+	if err != nil {
+		log.Fatal("Failed to get the absolute data source path:", err)
 	}
 
 	iniConfig := Config{}
@@ -170,12 +185,12 @@ func main() {
 	if err != nil {
 		log.Println("failed to marshal the yaml:", err)
 	} else {
-		yamlConfig.Options["datasources"] = "oam_datasources.yaml"
-		err = os.WriteFile("oam_datasources.yaml", output, 0644)
+		yamlConfig.Options["datasources"] = datasrcFile
+		err = os.WriteFile(datasrcFile, output, 0644)
 		if err != nil {
-			log.Println("Failed to write oam_datasources.yaml:", err)
+			log.Println("Failed to write datasources file:", err)
 		} else {
-			fmt.Println("Wrote oam_datasources.yaml successfully")
+			fmt.Println(b.Sprintf("Wrote data sources file successfully at ") + p.Sprintf(datasrcFile))
 		}
 	}
 
@@ -183,11 +198,11 @@ func main() {
 	if err != nil {
 		log.Println("failed to marshal the yaml:", err)
 	} else {
-		err = os.WriteFile("oam_config.yaml", output, 0644)
+		err = os.WriteFile(configFile, output, 0644)
 		if err != nil {
-			log.Println("Failed to write oam_config.yaml:", err)
+			log.Println("Failed to write config file:", err)
 		} else {
-			fmt.Println("Wrote oam_config.yaml successfully")
+			fmt.Println(b.Sprint("Wrote config file successfully at ") + p.Sprint(configFile))
 		}
 	}
 }
