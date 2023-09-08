@@ -6,7 +6,7 @@
 
 ## Command-line Usage Information
 
-The OAM Tools serves the purpose for extracting, manipulating, and analyzing data in an OAM database.
+The OAM Tools serve the purpose of extracting, manipulating, and analyzing data in an OAM database.
 
 **Current tools are:**
 
@@ -47,7 +47,7 @@ oam_i2y -ini config.ini -cf ../../config.yaml -df datasrc.yaml
 
 ### The 'oam_subs' Command
 
-Performs viewing and manipulation of the graph database. This command leverages either the sqlite file generated from enumerations, or the remote graph database settings from the configuration file. Flags for interacting with the enumeration findings in the graph database include:
+Performs viewing and manipulation of the graph database. This command leverages either the SQLite file generated from enumerations or the remote graph database settings from the configuration file. Flags for interacting with the enumeration findings in the graph database include:
 
 | Flag | Description | Example |
 |------|-------------|---------|
@@ -65,7 +65,7 @@ Performs viewing and manipulation of the graph database. This command leverages 
 
 ### The 'oam_track' Command
 
-Shows differences between enumerations that included the same target(s) for monitoring a target's attack surface. This command leverages either the sqlite file generated from enumerations, or the remote graph database settings from the configuration file. Flags for performing Internet exposure monitoring across the enumerations in the graph database:
+Shows differences between enumerations that included the same target(s) for monitoring a target's attack surface. This command leverages either the SQLite file generated from enumerations or the remote graph database settings from the configuration file. Flags for performing Internet exposure monitoring across the enumerations in the graph database:
 
 | Flag | Description | Example |
 |------|-------------|---------|
@@ -77,7 +77,7 @@ Shows differences between enumerations that included the same target(s) for moni
 
 ### The 'oam_viz' Command
 
-Create enlightening network graph visualizations that add structure to the information gathered. This command leverages either the sqlite file generated from enumerations, or the remote graph database settings from the configuration file.
+Create enlightening network graph visualizations that add structure to the information gathered. This command leverages either the SQLite file generated from enumerations or the remote graph database settings from the configuration file.
 
 The files generated for visualization are created in the current working directory and named amass_TYPE
 

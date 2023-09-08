@@ -8,7 +8,7 @@
 [![Chat on Discord](https://img.shields.io/discord/433729817918308352.svg?logo=discord)](https://discord.gg/HNePVyX3cp)
 
 
-The OAM Tools serves the purpose for extracting, manipulating, and analyzing data in an OAM database.
+The OAM Tools serve the purpose of extracting, manipulating, and analyzing data in an OAM database.
 
 **Current tools are:**
 
@@ -20,7 +20,7 @@ The OAM Tools serves the purpose for extracting, manipulating, and analyzing dat
 | oam_viz      | Analyze collected OAM data to generate files renderable as graph visualizations|
 
 ## Usage
-To understand how to use the tools above, check out the [User's Guide](./user_guide.md)!
+To understand how to use the tools above, check out the [Users' Guide](./user_guide.md)!
 
 ## Installation [![Go Version](https://img.shields.io/github/go-mod/go-version/owasp-amass/oam-tools)](https://golang.org/dl/) 
 
@@ -53,7 +53,7 @@ We are always happy to get new contributors on board! Join our [Discord Server](
 
 ## Troubleshooting [![Chat on Discord](https://img.shields.io/discord/433729817918308352.svg?logo=discord)](https://discord.gg/HNePVyX3cp)
 
-If you need help with installation and/or usage of the tools, please join our [Discord server](https://discord.gg/HNePVyX3cp) where community members can best help you.
+If you need help with the installation and/or usage of the tools, please join our [Discord server](https://discord.gg/HNePVyX3cp) where community members can best help you.
 
 **Please avoid opening GitHub issues for support requests or questions!**
 
