@@ -46,7 +46,7 @@ import (
 )
 
 const (
-	dbUsageMsg = "db [options]"
+	dbUsageMsg = "[options]"
 )
 
 var (
