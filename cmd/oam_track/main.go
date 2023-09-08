@@ -42,7 +42,7 @@ import (
 
 const (
 	timeFormat = "01/02 15:04:05 2006 MST"
-	usageMsg   = "track [options] [-since '" + timeFormat + "'] " + "-d domain"
+	usageMsg   = "[options] [-since '" + timeFormat + "'] " + "-d domain"
 )
 
 var (

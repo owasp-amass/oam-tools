@@ -37,7 +37,7 @@ import (
 )
 
 const (
-	dbUsageMsg = "[options]"
+	usageMsg = "[options]"
 )
 
 var (
@@ -63,7 +63,7 @@ func main() {
 	i2yCommand.StringVar(&datasrcFile, "df", "oam_datasources.yaml", "YAML data sources file name.")
 
 	var usage = func() {
-		g.Fprintf(color.Error, "Usage: %s %s\n\n", path.Base(os.Args[0]), dbUsageMsg)
+		g.Fprintf(color.Error, "Usage: %s %s\n\n", path.Base(os.Args[0]), usageMsg)
 		i2yCommand.PrintDefaults()
 		g.Fprintln(color.Error, i2yBuf.String())
 	}
@@ -86,6 +86,7 @@ func main() {
 		return
 	}
 
+	// converts the file paths to absolute paths
 	configFile, err = filepath.Abs(configFile)
 	if err != nil {
 		log.Fatal("Failed to get the absolute config path:", err)

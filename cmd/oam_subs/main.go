@@ -46,7 +46,7 @@ import (
 )
 
 const (
-	dbUsageMsg = "oam_subs [options]"
+	dbUsageMsg = "[options]"
 )
 
 var (
