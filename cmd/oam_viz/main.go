@@ -41,7 +41,7 @@ import (
 
 const (
 	timeFormat = "01/02 15:04:05 2006 MST"
-	usageMsg   = "-d3|-dot||-gexf [options] -d domain"
+	usageMsg   = "-d3|-dot|-gexf [options] -d domain"
 )
 
 var (
