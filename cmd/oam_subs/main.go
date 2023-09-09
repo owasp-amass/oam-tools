@@ -42,7 +42,6 @@ import (
 	oam "github.com/owasp-amass/open-asset-model"
 	"github.com/owasp-amass/open-asset-model/domain"
 	"github.com/owasp-amass/open-asset-model/network"
-	"golang.org/x/net/publicsuffix"
 )
 
 const (
@@ -178,10 +177,10 @@ func main() {
 		asninfo = true
 	}
 
-	showEventData(&args, asninfo, db)
+	showData(&args, asninfo, db)
 }
 
-func showEventData(args *dbArgs, asninfo bool, db *netmap.Graph) {
+func showData(args *dbArgs, asninfo bool, db *netmap.Graph) {
 	var total int
 	var err error
 	var outfile *os.File
@@ -210,8 +209,13 @@ func showEventData(args *dbArgs, asninfo bool, db *netmap.Graph) {
 		}
 	}
 
+	names := getNames(context.Background(), domains, asninfo, db)
+	if len(names) != 0 && (asninfo || args.Options.IPv4 || args.Options.IPv6) {
+		names = addAddresses(context.Background(), db, names, asninfo, cache)
+	}
+
 	asns := make(map[int]*ASNSummaryData)
-	for _, out := range getEventOutput(context.Background(), domains, asninfo, db, cache) {
+	for _, out := range names {
 		if len(domains) > 0 && !domainNameInScope(out.Name, domains) {
 			continue
 		}
@@ -291,65 +295,45 @@ func openGraphDatabase(dir string, cfg *config.Config) *netmap.Graph {
 	return netmap.NewGraph("memory", "", "")
 }
 
-func getEventOutput(ctx context.Context, domains []string, asninfo bool, db *netmap.Graph, cache *ASNCache) []*Output {
+func getNames(ctx context.Context, domains []string, asninfo bool, g *netmap.Graph) []*Output {
+	if len(domains) == 0 {
+		return nil
+	}
+
+	qtime := time.Time{}
 	filter := stringset.New()
 	defer filter.Close()
-
-	return EventOutput(ctx, db, domains, time.Time{}, filter, asninfo, cache)
-}
-
-// EventOutput returns findings within the receiver Graph within the scope identified by the provided domain names.
-// The filter is updated by EventOutput.
-func EventOutput(ctx context.Context, g *netmap.Graph, domains []string, since time.Time, f *stringset.Set, asninfo bool, cache *ASNCache) []*Output {
-	var res []*Output
-
-	if len(domains) == 0 {
-		return res
-	}
-
-	if f == nil {
-		f = stringset.New()
-		defer f.Close()
-	}
 
 	var fqdns []oam.Asset
 	for _, d := range domains {
 		fqdns = append(fqdns, domain.FQDN{Name: d})
 	}
 
-	qtime := time.Time{}
-	if !since.IsZero() {
-		qtime = since.UTC()
-	}
-
 	assets, err := g.DB.FindByScope(fqdns, qtime)
 	if err != nil {
-		return res
+		return nil
 	}
 
-	var names []string
+	var names []*Output
 	for _, a := range assets {
-		if n, ok := a.Asset.(domain.FQDN); ok && !f.Has(n.Name) {
-			names = append(names, n.Name)
+		if n, ok := a.Asset.(domain.FQDN); ok && !filter.Has(n.Name) {
+			names = append(names, &Output{Name: n.Name})
+			filter.Insert(n.Name)
 		}
 	}
+	return names
+}
 
+func addAddresses(ctx context.Context, g *netmap.Graph, names []*Output, asninfo bool, cache *ASNCache) []*Output {
+	var namestrs []string
 	lookup := make(outLookup, len(names))
 	for _, n := range names {
-		d, err := publicsuffix.EffectiveTLDPlusOne(n)
-		if err != nil {
-			continue
-		}
-
-		o := &Output{
-			Name:   n,
-			Domain: d,
-		}
-		res = append(res, o)
-		lookup[n] = o
+		lookup[n.Name] = n
+		namestrs = append(namestrs, n.Name)
 	}
 
-	if pairs, err := g.NamesToAddrs(ctx, qtime, names...); err == nil {
+	qtime := time.Time{}
+	if pairs, err := g.NamesToAddrs(ctx, qtime, namestrs...); err == nil {
 		for _, p := range pairs {
 			addr := p.Addr.Address.String()
 
@@ -363,9 +347,15 @@ func EventOutput(ctx context.Context, g *netmap.Graph, domains []string, since t
 	}
 
 	if !asninfo || cache == nil {
-		return removeDuplicates(lookup, f)
+		var output []*Output
+		for _, o := range lookup {
+			if len(o.Addresses) > 0 {
+				output = append(output, o)
+			}
+		}
+		return output
 	}
-	return addInfrastructureInfo(lookup, f, cache)
+	return addInfrastructureInfo(lookup, cache)
 }
 
 func domainNameInScope(name string, scope []string) bool {
@@ -384,19 +374,7 @@ func domainNameInScope(name string, scope []string) bool {
 	return discovered
 }
 
-func removeDuplicates(lookup outLookup, filter *stringset.Set) []*Output {
-	output := make([]*Output, 0, len(lookup))
-
-	for _, o := range lookup {
-		if !filter.Has(o.Name) {
-			output = append(output, o)
-			filter.Insert(o.Name)
-		}
-	}
-	return output
-}
-
-func addInfrastructureInfo(lookup outLookup, filter *stringset.Set, cache *ASNCache) []*Output {
+func addInfrastructureInfo(lookup outLookup, cache *ASNCache) []*Output {
 	output := make([]*Output, 0, len(lookup))
 
 	for _, o := range lookup {
@@ -419,16 +397,15 @@ func addInfrastructureInfo(lookup outLookup, filter *stringset.Set, cache *ASNCa
 		}
 
 		o.Addresses = newaddrs
-		if len(o.Addresses) > 0 && !filter.Has(o.Name) {
+		if len(o.Addresses) > 0 {
 			output = append(output, o)
-			filter.Insert(o.Name)
 		}
 	}
 	return output
 }
 
 func fillCache(cache *ASNCache, db *netmap.Graph) error {
-	start := time.Now().Add(-730 * time.Hour)
+	start := time.Time{}
 	assets, err := db.DB.FindByType(oam.ASN, start)
 	if err != nil {
 		return err
