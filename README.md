@@ -20,7 +20,9 @@ The OAM Tools serve the purpose of extracting, manipulating, and analyzing data 
 | oam_viz      | Analyze collected OAM data to generate files renderable as graph visualizations|
 
 ## Usage
-To understand how to use the tools above, check out the [Users' Guide](./user_guide.md)!
+To understand the various options that the tools offer, check out the [Users' Guide](./user_guide.md)!
+
+For a more thorough read to understand the proper use cases of the tool (with examples), check out the [Comprehensive Guide](./comprehensive_guide.md).
 
 ## Installation [![Go Version](https://img.shields.io/github/go-mod/go-version/owasp-amass/oam-tools)](https://golang.org/dl/) 
 

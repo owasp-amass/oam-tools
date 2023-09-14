@@ -16,7 +16,7 @@ import (
 
 const (
 	// Version is used to display the current version of oam_tools.
-	Version = "v0.1.0"
+	Version = "v0.1.1"
 
 	// Author is used to display the Amass Project Team.
 	Author = "OWASP Amass Team - @owaspamass"

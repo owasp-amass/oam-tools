@@ -6,7 +6,7 @@
 
 ## Command-line Usage Information
 
-The OAM Tools serve the purpose of extracting, manipulating, and analyzing data in an OAM database.
+The OAM Tools serve the purpose of extracting, manipulating, and analyzing data in an OAM database. For a more extensive read that covers possible use cases where the tools would be ideal, check out the [Comprehensive Guide](./comprehensive_guide.md).
 
 **Current tools are:**
 
@@ -22,7 +22,7 @@ All commands (except for oam_i2y) have some default global arguments that can be
 | Flag | Description | Example |
 |------|-------------|---------|
 | -h/-help | Show the program usage message | oam_command -h |
-| -config | Path to the YAML configuration file | oam_command -config config.ini |
+| -config | Path to the YAML configuration file | oam_command -config config.yaml |
 | -dir | Path to the directory containing the graph database | oam_command -dir PATH -d example.com |
 | -nocolor | Disable colorized output | oam_command -nocolor -d example.com |
 | -silent | Disable all output during execution | oam_command -silent -d example.com |
@@ -71,8 +71,6 @@ Shows differences between enumerations that included the same target(s) for moni
 |------|-------------|---------|
 | -d | Domain names separated by commas (can be used multiple times) | oam_track -d example.com |
 | -df | Path to a file providing root domain names | oam_track -df domains.txt |
-| -history | Show the difference between all enumeration pairs | oam_track -history |
-| -last | The number of recent enumerations to include in the tracking | oam_track -last NUM |
 | -since | Exclude all enumerations before a specified date (format: 01/02 15:04:05 2006 MST) | oam_track -since DATE |
 
 ### The 'oam_viz' Command
