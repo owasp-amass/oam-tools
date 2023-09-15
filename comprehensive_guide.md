@@ -1,4 +1,4 @@
-# Comprehensive Guid to OAM Tools
+# Comprehensive Guide to OAM Tools
 ![Network graph](./images/network_06092018.png "Amass Network Mapping")
 
 Delve into the functionalities of OAM's suite of command-line tools. Whether you're transitioning configurations, mapping complex IT structures, tracking domain changes, or visualizing intricate relationships, this guide provides detailed insights and usage examples to harness the full potential of OAM tools.
@@ -34,6 +34,8 @@ Here, the INI configuration `config.ini` is converted into `new_config.yaml`, al
 oam_i2y -ini config.ini -cf ../myconfigs/new_config.yaml -df ../mydatasources/data.yaml
 ```
 In addition to specifying the output name for the configuration, this command also defines where the data sources YAML file should be stored. Both paths are relative to the current working directory.
+
+<span style="font-size: 1.25em;">**Remember that when using `oam_i2y`, the path to the data source configuration file will already be populated in the `datasource` value of the configuration file. Unless you're relocating the data source file, there's no need to adjust the `datasource` value in your configuration.** </span>
 
 ---
 
