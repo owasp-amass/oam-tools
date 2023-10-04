@@ -6,14 +6,11 @@ require (
 	github.com/caffix/netmap v0.2.5
 	github.com/caffix/stringset v0.1.1
 	github.com/fatih/color v1.15.0
-	github.com/go-ini/ini v1.67.0
-	github.com/owasp-amass/amass/v4 v4.2.0
 	github.com/owasp-amass/asset-db v0.3.3
 	github.com/owasp-amass/config v0.1.5
 	github.com/owasp-amass/open-asset-model v0.2.0
 	github.com/stretchr/testify v1.8.4
 	github.com/yl2chen/cidranger v1.0.2
-	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
@@ -52,6 +49,7 @@ require (
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
+	github.com/owasp-amass/amass/v4 v4.2.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_golang v1.17.0 // indirect
@@ -69,6 +67,7 @@ require (
 	golang.org/x/text v0.13.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gorm.io/datatypes v1.2.0 // indirect
 	gorm.io/driver/mysql v1.5.1 // indirect
 	gorm.io/driver/postgres v1.5.2 // indirect
