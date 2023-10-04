@@ -7,38 +7,11 @@ We will go over the following tools:
 
 | Tool    | Description |
 |:-------------|:-------------|
-| [oam_i2y](#the-oam_i2y-command) | Convert legacy INI configuration format to the current YAML format|
 | [oam_subs](#the-oam_subs-command) | Analyze collected OAM assets|
 | [oam_track](#the-oam_track-command) | Analyze collected OAM data to identify newly discovered assets|
 | [oam_viz](#the-oam_viz-command) | Analyze collected OAM data to generate files renderable as graph visualizations|
 
 ---
-## The 'oam_i2y' Command
-
-The `oam_i2y` command is primarily used to convert legacy INI configuration files into the new YAML format. This is essential for users who want to transition from an older version of amass to a newer one while retaining their configurations. The YAML configuration will be compliant to all future developments in regards to OAM. It is in the user's best interest to transition to YAML for better compatability and support.
-
-**Example 1: Basic Conversion**
-```bash
-oam_i2y -ini config.ini
-```
-This command will convert the given `config.ini` file into a compliant YAML format. The resultant files will be named `oam_config.yaml` and `oam_datasources.yaml` by default.
-
-**Example 2: Specifying Output YAML Configuration File Name**
-```bash
-oam_i2y -ini config.ini -cf new_config.yaml
-```
-Here, the INI configuration `config.ini` is converted into `new_config.yaml`, allowing users to name the resultant YAML file as desired. If there are any data source credentials in the INI, it will output into a file called `oam_datasources.yaml` in the current working directory. 
-
-**Example 3: Specifying Paths for Both Configuration and Data Sources**
-```bash
-oam_i2y -ini config.ini -cf ../myconfigs/new_config.yaml -df ../mydatasources/data.yaml
-```
-In addition to specifying the output name for the configuration, this command also defines where the data sources YAML file should be stored. Both paths are relative to the current working directory.
-
-<span style="font-size: 1.25em;">**Remember that when using `oam_i2y`, the path to the data source configuration file will already be populated in the `datasource` value of the configuration file. Unless you're relocating the data source file, there's no need to adjust the `datasource` value in your configuration.** </span>
-
----
-
 ## The 'oam_subs' Command
 
 For enterprises with sprawling IT infrastructures, understanding every facet of their assets becomes a necessity. `oam_subs` offers a solution by mapping out these complex structures. Through extracting and analyzing data from the graph database, users can get a holistic view of their assets, swiftly identify potential vulnerabilities, and optimize IT operations. It's an indispensable tool for both operational efficiency and robust cybersecurity.

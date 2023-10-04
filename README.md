@@ -14,7 +14,6 @@ The OAM Tools serve the purpose of extracting, manipulating, and analyzing data 
 
 | Tool    | Description |
 |:-------------|:-------------|
-| oam_i2y      | Convert legacy INI configuration format to the current YAML format|
 | oam_subs     | Analyze collected OAM assets|
 | oam_track    | Analyze collected OAM data to identify newly discovered assets|
 | oam_viz      | Analyze collected OAM data to generate files renderable as graph visualizations|

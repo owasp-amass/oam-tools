@@ -157,7 +157,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	db := openGraphDatabase(args.Filepaths.Directory, cfg)
+	db := openGraphDatabase(cfg)
 	if db == nil {
 		r.Fprintln(color.Error, "Failed to connect with the database")
 		os.Exit(1)
@@ -270,7 +270,7 @@ func showData(args *dbArgs, asninfo bool, db *netmap.Graph) {
 	}
 }
 
-func openGraphDatabase(dir string, cfg *config.Config) *netmap.Graph {
+func openGraphDatabase(cfg *config.Config) *netmap.Graph {
 	// Add the local database settings to the configuration
 	cfg.GraphDBs = append(cfg.GraphDBs, cfg.LocalDatabaseSettings(cfg.GraphDBs))
 

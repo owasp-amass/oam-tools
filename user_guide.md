@@ -12,12 +12,11 @@ The OAM Tools serve the purpose of extracting, manipulating, and analyzing data 
 
 | Tool    | Description |
 |:-------------|:-------------|
-| [oam_i2y](#the-oam_i2y-command)     | Convert legacy INI configuration format to the current YAML format|
 | [oam_subs](#the-oam_subs-command)     | Analyze collected OAM assets|
 | [oam_track](#the-oam_track-command)    | Analyze collected OAM data to identify newly discovered assets|
 | [oam_viz](#the-oam_viz-command)      | Analyze collected OAM data to generate files renderable as graph visualizations|
 
-All commands (except for oam_i2y) have some default global arguments that can be seen below.
+All commands have some default global arguments that can be seen below.
 
 | Flag | Description | Example |
 |------|-------------|---------|
@@ -28,22 +27,6 @@ All commands (except for oam_i2y) have some default global arguments that can be
 | -silent | Disable all output during execution | oam_command -silent -d example.com |
 
 Each command's own arguments are shown in the following sections.
-
-### The 'oam_i2y' Command
-Converts the legacy INI format used before version 4.0 of amass, into the compliant YAML format used for the framework.
-
-| Flag | Description | Example |
-|------|-------------|---------|
-| -ini | Path to the INI configuration file | oam_i2y -ini config.ini |
-| -cf  | YAML configuration file name (default = oam_config.yaml) | oam_i2y -ini config.ini -cf example_config.yaml |
-| -df  | YAML data sources file name | oam_i2y -ini config.ini -df example_datasources.yaml
-
-Users can also specify the file path (doesn't have to be just the file name) in the arguments so it doesn't have to be in the cwd.
-
-Example:
-```bash
-oam_i2y -ini config.ini -cf ../../config.yaml -df datasrc.yaml
-```
 
 ### The 'oam_subs' Command
 
