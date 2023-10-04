@@ -30,7 +30,7 @@ For a more thorough read to understand the proper use cases of the tool (with ex
 1. Install [Go](https://golang.org/doc/install) and setup your Go workspace
 2. Download all the OAM tools by running `go install -v github.com/owasp-amass/oam-tools/cmd/...@master`
     - If you want to download a specific tool only, run `go install -v github.com/owasp-amass/oam-tools/cmd/TOOL_NAME@master`
-        - Example: `go install -v github.com/owasp-amass/oam-tools/cmd/oam_i2y@master`
+        - Example: `go install -v github.com/owasp-amass/oam-tools/cmd/oam_subs@master`
 3. At this point, the binary should be in `$GOPATH/bin`
 
 ### Local Install
