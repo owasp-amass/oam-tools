@@ -18,7 +18,7 @@ For enterprises with sprawling IT infrastructures, understanding every facet of 
 
 **Example 1: View Domain**
 ```bash
-oam_subs -d example.com
+oam_subs -show -d example.com
 ```
 Retrieve all available details about `example.com` from the graph database. Ideal for gaining a quick insight into a particular domain's assets.
 

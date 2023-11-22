@@ -34,16 +34,15 @@ Performs viewing and manipulation of the graph database. This command leverages 
 
 | Flag | Description | Example |
 |------|-------------|---------|
-| -d | Domain names separated by commas (can be used multiple times) | oam_subs -d example.com |
-| -demo | Censor output to make it suitable for demonstrations | oam_subs -demo -d example.com |
+| -d | Domain names separated by commas (can be used multiple times) | oam_subs -names -d example.com |
+| -demo | Censor output to make it suitable for demonstrations | oam_subs -names -demo -d example.com |
 | -df | Path to a file providing root domain names | oam_subs -df domains.txt |
 | -ip | Show the IP addresses for discovered names | oam_subs -show -ip -d example.com |
 | -ipv4 | Show the IPv4 addresses for discovered names | oam_subs -show -ipv4 -d example.com |
 | -ipv6 | Show the IPv6 addresses for discovered names | oam_subs -show -ipv6 -d example.com |
 | -names | Print just discovered names | oam_subs -names -d example.com |
 | -o | Path to the text output file | oam_subs -names -o out.txt -d example.com |
-| -show | Print the results for the enumeration index + domains provided | oam_subs -show |
-| -src | Print data sources for the discovered names | oam_subs -show -src -d example.com |
+| -show | Print the results for the enumeration index + domains provided | oam_subs -show -d example.com|
 | -summary | Print just ASN table summary | oam_subs -summary -d example.com |
 
 ### The 'oam_track' Command
