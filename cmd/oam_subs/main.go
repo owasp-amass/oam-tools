@@ -306,7 +306,7 @@ func getNames(ctx context.Context, domains []string, asninfo bool, g *netmap.Gra
 
 	var fqdns []oam.Asset
 	for _, d := range domains {
-		fqdns = append(fqdns, domain.FQDN{Name: d})
+		fqdns = append(fqdns, &domain.FQDN{Name: d})
 	}
 
 	assets, err := g.DB.FindByScope(fqdns, qtime)
@@ -316,7 +316,7 @@ func getNames(ctx context.Context, domains []string, asninfo bool, g *netmap.Gra
 
 	var names []*Output
 	for _, a := range assets {
-		if n, ok := a.Asset.(domain.FQDN); ok && !filter.Has(n.Name) {
+		if n, ok := a.Asset.(*domain.FQDN); ok && !filter.Has(n.Name) {
 			names = append(names, &Output{Name: n.Name})
 			filter.Insert(n.Name)
 		}
@@ -412,7 +412,7 @@ func fillCache(cache *ASNCache, db *netmap.Graph) error {
 	}
 
 	for _, a := range assets {
-		as, ok := a.Asset.(network.AutonomousSystem)
+		as, ok := a.Asset.(*network.AutonomousSystem)
 		if !ok {
 			continue
 		}

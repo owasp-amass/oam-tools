@@ -166,7 +166,7 @@ func getNewNames(domains []string, since time.Time, g *netmap.Graph) []string {
 
 	var fqdns []oam.Asset
 	for _, d := range domains {
-		fqdns = append(fqdns, domain.FQDN{Name: d})
+		fqdns = append(fqdns, &domain.FQDN{Name: d})
 	}
 
 	if !since.IsZero() {
@@ -182,7 +182,7 @@ func getNewNames(domains []string, since time.Time, g *netmap.Graph) []string {
 		var latest time.Time
 
 		for _, a := range assets {
-			if _, ok := a.Asset.(domain.FQDN); ok && a.LastSeen.After(latest) {
+			if _, ok := a.Asset.(*domain.FQDN); ok && a.LastSeen.After(latest) {
 				latest = a.LastSeen
 			}
 		}
@@ -194,7 +194,7 @@ func getNewNames(domains []string, since time.Time, g *netmap.Graph) []string {
 	defer res.Close()
 
 	for _, a := range assets {
-		if n, ok := a.Asset.(domain.FQDN); ok && !res.Has(n.Name) &&
+		if n, ok := a.Asset.(*domain.FQDN); ok && !res.Has(n.Name) &&
 			(a.CreatedAt.Equal(since) || a.CreatedAt.After(since)) &&
 			(a.LastSeen.Equal(since) || a.LastSeen.After(since)) {
 			res.Insert(n.Name)
