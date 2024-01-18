@@ -406,7 +406,7 @@ func addInfrastructureInfo(lookup outLookup, cache *ASNCache) []*Output {
 }
 
 func fillCache(cache *ASNCache, db *graph.Graph) error {
-	start := time.Time{}
+	start := time.Now().Add(-730 * time.Hour)
 	assets, err := db.DB.FindByType(oam.ASN, start)
 	if err != nil {
 		return err

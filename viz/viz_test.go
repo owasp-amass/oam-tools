@@ -24,7 +24,7 @@ func TestViz(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run("Testing VizData...", func(t *testing.T) {
-			err := g.UpsertA(context.Background(), tc.fqdn, tc.addr)
+			_, err := g.UpsertA(context.Background(), tc.fqdn, tc.addr)
 
 			if err != nil {
 				t.Errorf("Error inserting A record.\n%v", err)
