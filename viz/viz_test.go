@@ -9,11 +9,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/caffix/netmap"
+	"github.com/owasp-amass/engine/graph"
 )
 
 func TestViz(t *testing.T) {
-	g := netmap.NewGraph("memory", "", "")
+	g := graph.NewGraph("memory", "", "")
 
 	tt := []struct {
 		fqdn string

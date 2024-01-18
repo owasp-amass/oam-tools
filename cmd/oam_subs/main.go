@@ -35,10 +35,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/caffix/netmap"
 	"github.com/caffix/stringset"
 	"github.com/fatih/color"
 	"github.com/owasp-amass/config/config"
+	"github.com/owasp-amass/engine/graph"
 	oam "github.com/owasp-amass/open-asset-model"
 	"github.com/owasp-amass/open-asset-model/domain"
 	"github.com/owasp-amass/open-asset-model/network"
@@ -180,7 +180,7 @@ func main() {
 	showData(&args, asninfo, db)
 }
 
-func showData(args *dbArgs, asninfo bool, db *netmap.Graph) {
+func showData(args *dbArgs, asninfo bool, db *graph.Graph) {
 	var total int
 	var err error
 	var outfile *os.File
@@ -270,19 +270,19 @@ func showData(args *dbArgs, asninfo bool, db *netmap.Graph) {
 	}
 }
 
-func openGraphDatabase(cfg *config.Config) *netmap.Graph {
+func openGraphDatabase(cfg *config.Config) *graph.Graph {
 	// Add the local database settings to the configuration
 	cfg.GraphDBs = append(cfg.GraphDBs, cfg.LocalDatabaseSettings(cfg.GraphDBs))
 
 	for _, db := range cfg.GraphDBs {
 		if db.Primary {
-			var g *netmap.Graph
+			var g *graph.Graph
 
 			if db.System == "local" {
-				g = netmap.NewGraph(db.System, filepath.Join(config.OutputDirectory(cfg.Dir), "amass.sqlite"), db.Options)
+				g = graph.NewGraph(db.System, filepath.Join(config.OutputDirectory(cfg.Dir), "amass.sqlite"), db.Options)
 			} else {
 				connStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s", db.Host, db.Port, db.Username, db.Password, db.DBName)
-				g = netmap.NewGraph(db.System, connStr, db.Options)
+				g = graph.NewGraph(db.System, connStr, db.Options)
 			}
 
 			if g != nil {
@@ -292,10 +292,10 @@ func openGraphDatabase(cfg *config.Config) *netmap.Graph {
 		}
 	}
 
-	return netmap.NewGraph("memory", "", "")
+	return graph.NewGraph("memory", "", "")
 }
 
-func getNames(ctx context.Context, domains []string, asninfo bool, g *netmap.Graph) []*Output {
+func getNames(ctx context.Context, domains []string, asninfo bool, g *graph.Graph) []*Output {
 	if len(domains) == 0 {
 		return nil
 	}
@@ -324,7 +324,7 @@ func getNames(ctx context.Context, domains []string, asninfo bool, g *netmap.Gra
 	return names
 }
 
-func addAddresses(ctx context.Context, g *netmap.Graph, names []*Output, asninfo bool, cache *ASNCache) []*Output {
+func addAddresses(ctx context.Context, g *graph.Graph, names []*Output, asninfo bool, cache *ASNCache) []*Output {
 	var namestrs []string
 	lookup := make(outLookup, len(names))
 	for _, n := range names {
@@ -334,6 +334,7 @@ func addAddresses(ctx context.Context, g *netmap.Graph, names []*Output, asninfo
 
 	qtime := time.Time{}
 	if pairs, err := g.NamesToAddrs(ctx, qtime, namestrs...); err == nil {
+		fmt.Printf("Length: %d\n", len(pairs))
 		for _, p := range pairs {
 			addr := p.Addr.Address.String()
 
@@ -404,7 +405,7 @@ func addInfrastructureInfo(lookup outLookup, cache *ASNCache) []*Output {
 	return output
 }
 
-func fillCache(cache *ASNCache, db *netmap.Graph) error {
+func fillCache(cache *ASNCache, db *graph.Graph) error {
 	start := time.Time{}
 	assets, err := db.DB.FindByType(oam.ASN, start)
 	if err != nil {

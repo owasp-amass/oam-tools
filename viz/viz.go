@@ -9,8 +9,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/caffix/netmap"
 	"github.com/owasp-amass/asset-db/types"
+	"github.com/owasp-amass/engine/graph"
 	oam "github.com/owasp-amass/open-asset-model"
 	"github.com/owasp-amass/open-asset-model/domain"
 	"github.com/owasp-amass/open-asset-model/network"
@@ -32,14 +32,14 @@ type Node struct {
 }
 
 // VizData returns the current state of the Graph as viz package Nodes and Edges.
-func VizData(domains []string, since time.Time, g *netmap.Graph) ([]Node, []Edge) {
+func VizData(domains []string, since time.Time, g *graph.Graph) ([]Node, []Edge) {
 	if len(domains) == 0 {
 		return []Node{}, []Edge{}
 	}
 
 	var fqdns []oam.Asset
 	for _, d := range domains {
-		fqdns = append(fqdns, domain.FQDN{Name: d})
+		fqdns = append(fqdns, &domain.FQDN{Name: d})
 	}
 
 	if !since.IsZero() {
@@ -158,23 +158,23 @@ func newNode(idx int, a *types.Asset) *Node {
 	var name, atype, title string
 
 	switch v := a.Asset.(type) {
-	case domain.FQDN:
+	case *domain.FQDN:
 		name = v.Name
 		atype = string(oam.FQDN)
 		title = atype + ": " + name
-	case network.IPAddress:
+	case *network.IPAddress:
 		name = v.Address.String()
 		atype = string(oam.IPAddress)
 		title = atype + ": " + name
-	case network.AutonomousSystem:
+	case *network.AutonomousSystem:
 		name = strconv.Itoa(v.Number)
 		atype = string(oam.ASN)
 		title = atype + ": AS" + name
-	case network.RIROrganization:
+	case *network.RIROrganization:
 		name = v.RIRId + v.Name
 		atype = string(oam.RIROrg)
 		title = atype + ": " + name
-	case network.Netblock:
+	case *network.Netblock:
 		name = v.Cidr.String()
 		atype = string(oam.Netblock)
 		title = atype + ": " + name
