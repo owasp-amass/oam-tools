@@ -334,7 +334,6 @@ func addAddresses(ctx context.Context, g *graph.Graph, names []*Output, asninfo 
 
 	qtime := time.Time{}
 	if pairs, err := g.NamesToAddrs(ctx, qtime, namestrs...); err == nil {
-		fmt.Printf("Length: %d\n", len(pairs))
 		for _, p := range pairs {
 			addr := p.Addr.Address.String()
 
