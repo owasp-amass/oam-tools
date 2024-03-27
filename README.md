@@ -46,7 +46,7 @@ For a more thorough read to understand the proper use cases of the tool (with ex
 
 ## Corporate Supporters
 
-[![ZeroFox Logo](./images/zerofox_logo.png)](https://www.zerofox.com/) [![IPinfo Logo](./images/ipinfo_logo.png)](https://ipinfo.io/) [![WhoisXML API Logo](./images/whoisxmlapi_logo.png)](https://www.whoisxmlapi.com/)
+[![ZeroFox Logo](./images/zerofox_logo.png)](https://www.zerofox.com/) [![WhoisXML API Logo](./images/whoisxmlapi_logo.png)](https://www.whoisxmlapi.com/)
 
 ## Contributing [![Contribute Yes](https://img.shields.io/badge/contribute-yes-brightgreen.svg)](./CONTRIBUTING.md) [![Chat on Discord](https://img.shields.io/discord/433729817918308352.svg?logo=discord)](https://discord.gg/HNePVyX3cp)
 
@@ -60,4 +60,4 @@ If you need help with the installation and/or usage of the tools, please join ou
 
 ## Licensing [![License](https://img.shields.io/badge/license-apache%202-blue)](https://www.apache.org/licenses/LICENSE-2.0)
 
-This program is free software: you can redistribute it and/or modify it under the terms of the [Apache license](LICENSE). OWASP Amass and any contributions are Copyright © by Jeff Foley 2017-2023. Some subcomponents have separate licenses.
+This program is free software: you can redistribute it and/or modify it under the terms of the [Apache license](LICENSE). OWASP Amass and any contributions are Copyright © by Jeff Foley 2017-2024. Some subcomponents have separate licenses.
