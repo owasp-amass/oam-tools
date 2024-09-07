@@ -42,6 +42,7 @@ import (
 	oam "github.com/owasp-amass/open-asset-model"
 	"github.com/owasp-amass/open-asset-model/domain"
 	"github.com/owasp-amass/open-asset-model/network"
+	"github.com/owasp-amass/open-asset-model/whois"
 )
 
 const (
@@ -406,7 +407,7 @@ func addInfrastructureInfo(lookup outLookup, cache *ASNCache) []*Output {
 
 func fillCache(cache *ASNCache, db *graph.Graph) error {
 	start := time.Now().Add(-730 * time.Hour)
-	assets, err := db.DB.FindByType(oam.ASN, start)
+	assets, err := db.DB.FindByType(oam.AutonomousSystem, start)
 	if err != nil {
 		return err
 	}
@@ -417,7 +418,20 @@ func fillCache(cache *ASNCache, db *graph.Graph) error {
 			continue
 		}
 
-		desc := db.ReadASDescription(context.Background(), as.Number, start)
+		var desc string
+		rels, err := db.DB.OutgoingRelations(a, start, "registration")
+		if err != nil || len(rels) == 0 {
+			continue
+		}
+
+		for _, rel := range rels {
+			if asset, err := db.DB.FindById(rel.ID, start); err == nil && asset != nil {
+				if autnum, ok := asset.Asset.(*whois.AutnumRecord); ok && autnum != nil {
+					desc = autnum.Handle + " - " + autnum.Name
+					break
+				}
+			}
+		}
 		if desc == "" {
 			continue
 		}

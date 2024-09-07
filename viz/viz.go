@@ -97,9 +97,9 @@ func VizData(domains []string, since time.Time, g *graph.Graph) ([]Node, []Edge)
 				out = true
 			case oam.Netblock:
 				in = true
-			case oam.ASN:
+			case oam.AutonomousSystem:
 				out = true
-			case oam.RIROrg:
+			case oam.AutnumRecord:
 				in = true
 			case oam.SocketAddress:
 			case oam.ContactRecord:
@@ -118,7 +118,6 @@ func VizData(domains []string, since time.Time, g *graph.Graph) ([]Node, []Edge)
 				fallthrough
 			case oam.DomainRecord:
 				out = true
-			case oam.Registrar:
 			case oam.Source:
 			}
 			// Obtain relations to additional assets in the graph
@@ -203,11 +202,11 @@ func newNode(idx int, a *types.Asset) *Node {
 		title = atype + ": " + name
 	case *network.AutonomousSystem:
 		name = strconv.Itoa(v.Number)
-		atype = string(oam.ASN)
+		atype = string(oam.AutonomousSystem)
 		title = atype + ": AS" + name
-	case *network.RIROrganization:
-		name = v.RIRId + v.Name
-		atype = string(oam.RIROrg)
+	case *whois.AutnumRecord:
+		name = v.Handle + " - " + v.Name
+		atype = string(oam.AutnumRecord)
 		title = atype + ": " + name
 	case *network.Netblock:
 		name = v.Cidr.String()
@@ -256,10 +255,6 @@ func newNode(idx int, a *types.Asset) *Node {
 	case *whois.DomainRecord:
 		name = v.Domain
 		atype = string(oam.DomainRecord)
-		title = atype + ": " + name
-	case *whois.Registrar:
-		name = v.Name
-		atype = string(oam.Registrar)
 		title = atype + ": " + name
 	/*case *source.Source:
 	name = v.Name
