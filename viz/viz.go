@@ -86,6 +86,7 @@ func VizData(domains []string, since time.Time, g *graph.Graph) ([]Node, []Edge)
 			}
 			// Determine relationship directions to follow on the graph
 			var in, out bool
+			var inRels, outRels []string
 			switch a.Asset.AssetType() {
 			case oam.FQDN:
 				out = true
@@ -93,11 +94,15 @@ func VizData(domains []string, since time.Time, g *graph.Graph) ([]Node, []Edge)
 					in = true
 				}
 			case oam.IPAddress:
+				in = true
+				inRels = append(inRels, "contains")
 				out = true
 			case oam.Netblock:
 				in = true
+				inRels = append(inRels, "announces")
 			case oam.AutonomousSystem:
 				out = true
+				outRels = append(outRels, "registration")
 			case oam.AutnumRecord:
 				out = true
 			case oam.SocketAddress:
@@ -122,7 +127,7 @@ func VizData(domains []string, since time.Time, g *graph.Graph) ([]Node, []Edge)
 			}
 			// Obtain relations to additional assets in the graph
 			if out {
-				if rels, err := g.DB.OutgoingRelations(a, since); err == nil && len(rels) > 0 {
+				if rels, err := g.DB.OutgoingRelations(a, since, outRels...); err == nil && len(rels) > 0 {
 					fromID := id
 					for _, rel := range rels {
 						if to, err := g.DB.FindById(rel.ToAsset.ID, since); err == nil {
@@ -152,7 +157,7 @@ func VizData(domains []string, since time.Time, g *graph.Graph) ([]Node, []Edge)
 				}
 			}
 			if in {
-				if rels, err := g.DB.IncomingRelations(a, since); err == nil && len(rels) > 0 {
+				if rels, err := g.DB.IncomingRelations(a, since, inRels...); err == nil && len(rels) > 0 {
 					toID := id
 					for _, rel := range rels {
 						if from, err := g.DB.FindById(rel.FromAsset.ID, since); err == nil {
