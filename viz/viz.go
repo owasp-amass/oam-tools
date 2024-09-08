@@ -93,14 +93,13 @@ func VizData(domains []string, since time.Time, g *graph.Graph) ([]Node, []Edge)
 					in = true
 				}
 			case oam.IPAddress:
-				in = true
 				out = true
 			case oam.Netblock:
 				in = true
 			case oam.AutonomousSystem:
 				out = true
 			case oam.AutnumRecord:
-				in = true
+				out = true
 			case oam.SocketAddress:
 			case oam.ContactRecord:
 				fallthrough
@@ -119,6 +118,7 @@ func VizData(domains []string, since time.Time, g *graph.Graph) ([]Node, []Edge)
 			case oam.DomainRecord:
 				out = true
 			case oam.Source:
+			default:
 			}
 			// Obtain relations to additional assets in the graph
 			if out {
