@@ -258,7 +258,7 @@ func newNode(idx int, a *types.Asset) *Node {
 		atype = string(oam.URL)
 		title = atype + ": " + name
 	case *whois.DomainRecord:
-		name = v.Domain
+		name = "WHOIS: " + v.Domain
 		atype = string(oam.DomainRecord)
 		title = atype + ": " + name
 	/*case *source.Source:
