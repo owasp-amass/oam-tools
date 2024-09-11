@@ -107,19 +107,21 @@ func VizData(domains []string, since time.Time, g *graph.Graph) ([]Node, []Edge)
 				out = true
 			case oam.SocketAddress:
 			case oam.ContactRecord:
-				fallthrough
+				out = true
 			case oam.EmailAddress:
-				fallthrough
+				out = true
 			case oam.Location:
 				out = true
 			case oam.Phone:
+				out = true
 			case oam.Fingerprint:
 			case oam.Organization:
 				out = true
 			case oam.Person:
+				out = true
 			case oam.TLSCertificate:
 			case oam.URL:
-				fallthrough
+				out = true
 			case oam.DomainRecord:
 				out = true
 			case oam.Source:
@@ -222,7 +224,7 @@ func newNode(idx int, a *types.Asset) *Node {
 		atype = string(oam.SocketAddress)
 		title = atype + ": " + name
 	case *contact.ContactRecord:
-		name = v.DiscoveredAt
+		name = "Found->" + v.DiscoveredAt
 		atype = string(oam.ContactRecord)
 		title = atype + ": " + name
 	case *contact.EmailAddress:
@@ -230,7 +232,8 @@ func newNode(idx int, a *types.Asset) *Node {
 		atype = string(oam.EmailAddress)
 		title = atype + ": " + name
 	case *contact.Location:
-		name = v.Address
+		parts := []string{v.BuildingNumber, v.StreetName, v.City, v.Province, v.PostalCode}
+		name = strings.Join(parts, " ")
 		atype = string(oam.Location)
 		title = atype + ": " + name
 	case *contact.Phone:
