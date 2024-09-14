@@ -5,7 +5,6 @@
 package viz
 
 import (
-	"strconv"
 	"strings"
 	"time"
 
@@ -14,12 +13,7 @@ import (
 	oam "github.com/owasp-amass/open-asset-model"
 	"github.com/owasp-amass/open-asset-model/contact"
 	"github.com/owasp-amass/open-asset-model/domain"
-	"github.com/owasp-amass/open-asset-model/network"
-	"github.com/owasp-amass/open-asset-model/org"
-	"github.com/owasp-amass/open-asset-model/people"
-	oamcert "github.com/owasp-amass/open-asset-model/tls_certificate"
-	"github.com/owasp-amass/open-asset-model/url"
-	"github.com/owasp-amass/open-asset-model/whois"
+	oamreg "github.com/owasp-amass/open-asset-model/registration"
 )
 
 // Edge represents an Amass graph edge in the viz package.
@@ -196,86 +190,35 @@ func VizData(domains []string, since time.Time, g *graph.Graph) ([]Node, []Edge)
 }
 
 func newNode(idx int, a *types.Asset) *Node {
-	var name, atype, title string
+	key := a.Asset.Key()
+	if key == "" {
+		return nil
+	}
+
+	atype := string(a.Asset.AssetType())
+	if atype == string(oam.Source) {
+		return nil
+	}
 
 	switch v := a.Asset.(type) {
-	case *domain.FQDN:
-		name = v.Name
-		atype = string(oam.FQDN)
-		title = atype + ": " + name
-	case *network.IPAddress:
-		name = v.Address.String()
-		atype = string(oam.IPAddress)
-		title = atype + ": " + name
-	case *network.AutonomousSystem:
-		name = strconv.Itoa(v.Number)
-		atype = string(oam.AutonomousSystem)
-		title = atype + ": AS" + name
-	case *whois.AutnumRecord:
-		name = v.Handle + " - " + v.Name
-		atype = string(oam.AutnumRecord)
-		title = atype + ": " + name
-	case *network.Netblock:
-		name = v.Cidr.String()
-		atype = string(oam.Netblock)
-		title = atype + ": " + name
-	case *network.SocketAddress:
-		name = v.Address.String()
-		atype = string(oam.SocketAddress)
-		title = atype + ": " + name
+	case *oamreg.AutnumRecord:
+		key = v.Handle + " - " + key
 	case *contact.ContactRecord:
-		name = "Found->" + v.DiscoveredAt
-		atype = string(oam.ContactRecord)
-		title = atype + ": " + name
-	case *contact.EmailAddress:
-		name = v.Address
-		atype = string(oam.EmailAddress)
-		title = atype + ": " + name
+		key = "Found->" + key
 	case *contact.Location:
 		parts := []string{v.BuildingNumber, v.StreetName, v.City, v.Province, v.PostalCode}
-		name = strings.Join(parts, " ")
-		atype = string(oam.Location)
-		title = atype + ": " + name
-	case *contact.Phone:
-		name = v.Raw
-		atype = string(oam.Phone)
-		title = atype + ": " + name
-	/*case *fingerprint.Fingerprint:
-	name = v.Value
-	atype = string(oam.Fingerprint)
-	title = atype + ": " + name*/
-	case *org.Organization:
-		name = v.Name
-		atype = string(oam.Organization)
-		title = atype + ": " + name
-	case *people.Person:
-		name = v.FullName
-		atype = string(oam.Person)
-		title = atype + ": " + name
-	case *oamcert.TLSCertificate:
-		name = v.SerialNumber
-		atype = string(oam.TLSCertificate)
-		title = atype + ": " + name
-	case *url.URL:
-		name = v.Raw
-		atype = string(oam.URL)
-		title = atype + ": " + name
-	case *whois.DomainRecord:
-		name = "WHOIS: " + v.Domain
-		atype = string(oam.DomainRecord)
-		title = atype + ": " + name
-	/*case *source.Source:
-	name = v.Name
-	atype = string(oam.Source)
-	title = atype + ": " + name*/
+		key = strings.Join(parts, " ")
+	case *oamreg.DomainRecord:
+		key = "WHOIS: " + key
 	default:
 		return nil
 	}
+	title := atype + ": " + key
 
 	return &Node{
 		ID:    idx,
 		Type:  atype,
-		Label: name,
+		Label: key,
 		Title: title,
 	}
 }

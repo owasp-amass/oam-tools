@@ -42,7 +42,7 @@ import (
 	oam "github.com/owasp-amass/open-asset-model"
 	"github.com/owasp-amass/open-asset-model/domain"
 	"github.com/owasp-amass/open-asset-model/network"
-	"github.com/owasp-amass/open-asset-model/whois"
+	oamreg "github.com/owasp-amass/open-asset-model/registration"
 )
 
 const (
@@ -426,7 +426,7 @@ func fillCache(cache *ASNCache, db *graph.Graph) error {
 
 		for _, rel := range rels {
 			if asset, err := db.DB.FindById(rel.ToAsset.ID, start); err == nil && asset != nil {
-				if autnum, ok := asset.Asset.(*whois.AutnumRecord); ok && autnum != nil {
+				if autnum, ok := asset.Asset.(*oamreg.AutnumRecord); ok && autnum != nil {
 					desc = autnum.Handle + " - " + autnum.Name
 					break
 				}
