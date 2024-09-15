@@ -101,6 +101,9 @@ func VizData(domains []string, since time.Time, g *graph.Graph) ([]Node, []Edge)
 			case oam.AutnumRecord:
 				out = true
 			case oam.SocketAddress:
+				out = true
+			case oam.NetworkEndpoint:
+				out = true
 			case oam.ContactRecord:
 				out = true
 			case oam.EmailAddress:
@@ -115,11 +118,14 @@ func VizData(domains []string, since time.Time, g *graph.Graph) ([]Node, []Edge)
 			case oam.Person:
 				out = true
 			case oam.TLSCertificate:
+				out = true
 			case oam.URL:
 				out = true
 			case oam.DomainRecord:
 				out = true
 			case oam.Source:
+			case oam.Service:
+				out = true
 			default:
 			}
 			// Obtain relations to additional assets in the graph
