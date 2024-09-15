@@ -311,6 +311,7 @@ type d3Graph struct {
 func WriteD3Data(output io.Writer, nodes []Node, edges []Edge) error {
 	colors := map[string]string{
 		string(oam.FQDN):             "green",
+		string(oam.NetworkEndpoint):  "blueviolet",
 		string(oam.IPAddress):        "orange",
 		string(oam.AutnumRecord):     "yellow",
 		string(oam.Netblock):         "pink",
@@ -327,6 +328,7 @@ func WriteD3Data(output io.Writer, nodes []Node, edges []Edge) error {
 		string(oam.URL):              "azure",
 		string(oam.DomainRecord):     "yellow",
 		string(oam.Source):           "burlywood",
+		string(oam.Service):          "darkslategrey",
 	}
 
 	graph := &d3Graph{Name: "OWASP Amass - Attack Surface Mapping"}
