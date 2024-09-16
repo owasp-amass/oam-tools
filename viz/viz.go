@@ -11,6 +11,7 @@ import (
 	"github.com/owasp-amass/asset-db/types"
 	"github.com/owasp-amass/engine/graph"
 	oam "github.com/owasp-amass/open-asset-model"
+	oamcert "github.com/owasp-amass/open-asset-model/certificate"
 	"github.com/owasp-amass/open-asset-model/contact"
 	"github.com/owasp-amass/open-asset-model/domain"
 	oamreg "github.com/owasp-amass/open-asset-model/registration"
@@ -222,6 +223,8 @@ func newNode(idx int, a *types.Asset) *Node {
 		key = strings.Join(parts, " ")
 	case *oamreg.DomainRecord:
 		key = "WHOIS: " + key
+	case *oamcert.TLSCertificate:
+		key = "x509 Serial Number: " + v.SerialNumber
 	case *source.Source:
 		return nil
 	}

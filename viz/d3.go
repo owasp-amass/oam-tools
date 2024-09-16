@@ -324,7 +324,7 @@ func WriteD3Data(output io.Writer, nodes []Node, edges []Edge) error {
 		string(oam.Fingerprint):      "red",
 		string(oam.Organization):     "aqua",
 		string(oam.Person):           "bisque",
-		string(oam.TLSCertificate):   "aquamarine",
+		string(oam.TLSCertificate):   "darkred",
 		string(oam.URL):              "azure",
 		string(oam.DomainRecord):     "yellow",
 		string(oam.Source):           "burlywood",
