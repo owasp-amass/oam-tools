@@ -8,12 +8,14 @@ import (
 	"strings"
 	"time"
 
+	assetdb "github.com/owasp-amass/asset-db"
 	"github.com/owasp-amass/asset-db/types"
 	"github.com/owasp-amass/engine/graph"
 	oam "github.com/owasp-amass/open-asset-model"
 	oamcert "github.com/owasp-amass/open-asset-model/certificate"
 	"github.com/owasp-amass/open-asset-model/contact"
 	"github.com/owasp-amass/open-asset-model/domain"
+	"github.com/owasp-amass/open-asset-model/network"
 	oamreg "github.com/owasp-amass/open-asset-model/registration"
 	"github.com/owasp-amass/open-asset-model/source"
 )
@@ -67,7 +69,7 @@ func VizData(domains []string, since time.Time, g *graph.Graph) ([]Node, []Edge)
 		next = []*types.Asset{}
 
 		for _, a := range assets {
-			n := newNode(idx, a)
+			n := newNode(g.DB, idx, a, since)
 			if n == nil {
 				continue
 			}
@@ -136,7 +138,7 @@ func VizData(domains []string, since time.Time, g *graph.Graph) ([]Node, []Edge)
 					for _, rel := range rels {
 						if to, err := g.DB.FindById(rel.ToAsset.ID, since); err == nil {
 							toID := idx
-							n2 := newNode(toID, to)
+							n2 := newNode(g.DB, toID, to, since)
 							if n2 == nil {
 								continue
 							}
@@ -166,7 +168,7 @@ func VizData(domains []string, since time.Time, g *graph.Graph) ([]Node, []Edge)
 					for _, rel := range rels {
 						if from, err := g.DB.FindById(rel.FromAsset.ID, since); err == nil {
 							fromID := idx
-							n2 := newNode(fromID, from)
+							n2 := newNode(g.DB, fromID, from, since)
 							if n2 == nil {
 								continue
 							}
@@ -197,7 +199,7 @@ func VizData(domains []string, since time.Time, g *graph.Graph) ([]Node, []Edge)
 	return nodes, edges
 }
 
-func newNode(idx int, a *types.Asset) *Node {
+func newNode(db *assetdb.AssetDB, idx int, a *types.Asset, since time.Time) *Node {
 	if a == nil || a.Asset == nil {
 		return nil
 	}
@@ -213,6 +215,7 @@ func newNode(idx int, a *types.Asset) *Node {
 		return nil
 	}
 
+	var check bool
 	switch v := asset.(type) {
 	case *oamreg.AutnumRecord:
 		key = v.Handle + " - " + key
@@ -225,11 +228,20 @@ func newNode(idx int, a *types.Asset) *Node {
 		key = "WHOIS: " + key
 	case *oamcert.TLSCertificate:
 		key = "x509 Serial Number: " + v.SerialNumber
+	case *domain.NetworkEndpoint:
+		check = true
+	case *network.SocketAddress:
+		check = true
 	case *source.Source:
 		return nil
 	}
 	title := atype + ": " + key
 
+	if check {
+		if rels, err := db.OutgoingRelations(a, since, "service"); err != nil || len(rels) == 0 {
+			return nil
+		}
+	}
 	return &Node{
 		ID:    idx,
 		Type:  atype,
