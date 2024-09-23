@@ -87,9 +87,11 @@ func VizData(domains []string, since time.Time, g *graph.Graph) ([]Node, []Edge)
 			var inRels, outRels []string
 			switch a.Asset.AssetType() {
 			case oam.FQDN:
-				out = true
 				if domainNameInScope(n.Label, domains) {
 					in = true
+					out = true
+				} else if associatedWithScope(g.DB, a, domains, since) {
+					out = true
 				}
 			case oam.IPAddress:
 				in = true
@@ -116,6 +118,7 @@ func VizData(domains []string, since time.Time, g *graph.Graph) ([]Node, []Edge)
 			case oam.Phone:
 				out = true
 			case oam.Fingerprint:
+				in = true
 			case oam.Organization:
 				out = true
 			case oam.Person:
@@ -264,4 +267,36 @@ func domainNameInScope(name string, scope []string) bool {
 	}
 
 	return discovered
+}
+
+func associatedWithScope(db *assetdb.AssetDB, asset *types.Asset, scope []string, since time.Time) bool {
+	if rels, err := db.OutgoingRelations(asset, since, "ptr_record"); err == nil && len(rels) > 0 {
+		for _, rel := range rels {
+			if to, err := db.FindById(rel.ToAsset.ID, since); err == nil {
+				if n, ok := to.Asset.(*domain.FQDN); ok && n != nil && domainNameInScope(n.Name, scope) {
+					return true
+				}
+			}
+		}
+		return false
+	}
+
+	return followBackForScope(db, asset, scope, since)
+}
+
+func followBackForScope(db *assetdb.AssetDB, asset *types.Asset, scope []string, since time.Time) bool {
+	ins := []string{"cname_record", "ns_record", "mx_record", "srv_record"}
+
+	if rels, err := db.IncomingRelations(asset, since, ins...); err == nil && len(rels) > 0 {
+		for _, rel := range rels {
+			if from, err := db.FindById(rel.FromAsset.ID, since); err == nil {
+				if n, ok := from.Asset.(*domain.FQDN); ok && n != nil && domainNameInScope(n.Name, scope) {
+					return true
+				} else if followBackForScope(db, from, scope, since) {
+					return true
+				}
+			}
+		}
+	}
+	return false
 }
