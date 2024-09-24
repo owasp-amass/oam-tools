@@ -100,6 +100,8 @@ func VizData(domains []string, since time.Time, g *graph.Graph) ([]Node, []Edge)
 			case oam.Netblock:
 				in = true
 				inRels = append(inRels, "announces")
+				out = true
+				outRels = append(outRels, "registration")
 			case oam.AutonomousSystem:
 				out = true
 				outRels = append(outRels, "registration")
