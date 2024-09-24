@@ -314,6 +314,7 @@ func WriteD3Data(output io.Writer, nodes []Node, edges []Edge) error {
 		string(oam.NetworkEndpoint):  "blueviolet",
 		string(oam.IPAddress):        "orange",
 		string(oam.AutnumRecord):     "yellow",
+		string(oam.IPNetRecord):      "yellow",
 		string(oam.Netblock):         "pink",
 		string(oam.AutonomousSystem): "blue",
 		string(oam.SocketAddress):    "blueviolet",

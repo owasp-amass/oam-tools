@@ -105,6 +105,8 @@ func VizData(domains []string, since time.Time, g *graph.Graph) ([]Node, []Edge)
 				outRels = append(outRels, "registration")
 			case oam.AutnumRecord:
 				out = true
+			case oam.IPNetRecord:
+				out = true
 			case oam.SocketAddress:
 				out = true
 			case oam.NetworkEndpoint:
@@ -220,8 +222,6 @@ func newNode(db *assetdb.AssetDB, idx int, a *types.Asset, since time.Time) *Nod
 
 	var check bool
 	switch v := asset.(type) {
-	case *oamreg.AutnumRecord:
-		key = v.Handle + " - " + key
 	case *contact.ContactRecord:
 		key = "Found->" + key
 	case *contact.Location:
