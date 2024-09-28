@@ -58,7 +58,7 @@ oam_subs -summary -d example.com
 ```
 Present a succinct overview of the Autonomous System Numbers associated with the domain. This is crucial for network analysts interested in understanding the ASN landscape of a domain.
 
-This example shows the use of oam_subs against owasp.org. The configuration is set to reach a remote database. For more information in regards to configuration, please visit the [configuration users' guide](https://github.com/owasp-amass/config/blob/master/user_guide.md).
+This example shows the use of oam_subs against owasp.org. The configuration is set to reach a remote database. For more information in regards to configuration, please visit the [configuration users' guide](https://github.com/owasp-amass/config/blob/master/docs/user_guide.md).
 ![Example Image](images/oam_subs-example-owasp.png)
 
 ---
